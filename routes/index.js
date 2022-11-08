@@ -1,9 +1,10 @@
-const express = require('express');
-const router = express.Router();
+var express = require('express');
+var router = express.Router();
+require('dotenv').config();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('hello world');
+  res.send(`hello world ${process.env.test}`)
 });
 
 module.exports = router;
