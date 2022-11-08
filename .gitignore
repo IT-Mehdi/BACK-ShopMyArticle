@@ -44,6 +44,9 @@ jspm_packages/
 # TypeScript v1 declaration files
 typings/
 
+# ignore the specific packages versions installed by the developper
+package-lock.json
+
 # TypeScript cache
 *.tsbuildinfo
 
