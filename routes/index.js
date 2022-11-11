@@ -1,16 +1,13 @@
 var express = require('express');
 var router = express.Router();
 require('dotenv').config();
-const stripe = require("stripe")('sk_test_MgvkTWK1jRG3olSRx9B7Mmxo');
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.send(`hello world ${process.env.test}`)
 });
 const calculateOrderAmount = (items) => {
-  // Replace this constant with a calculation of the order's amount
-  // Calculate the order total on the server to prevent
-  // people from directly manipulating the amount on the client
   return 1400;
 };
 
