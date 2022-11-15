@@ -1,34 +1,43 @@
-var express = require('express');
-var router = express.Router();
+// This is a public sample test API key.
+// Don’t submit any personally identifiable information in requests made with this key.
+// Sign in to see your own test API key embedded in code samples.
+const Stripe = require('stripe');
+const express = require('express');
+const router = express.Router();
 require('dotenv').config();
-const stripe = require("stripe")(process.env.STRIPE_KEY);
+const stripe = Stripe(process.env.STRIPE_KEY);
 
-/* GET home page. */
-router.get('/', function (req, res, next) {
-  res.send(`hello world ${process.env.test}`)
-});
-const calculateOrderAmount = (items) => {
-  return 1400;
-};
+const YOUR_DOMAIN = 'http://localhost:4242';
 
-router.post("/create-payment-intent", async (req, res) => {
-  const { items } = req.body;
+console.log("helooo")
 
-  // Create a PaymentIntent with the order amount and currency
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: calculateOrderAmount(items),
-    currency: "eur",
-    payment_method_types: [
-      'bancontact',
-      'card',
-      'sepa_debit',
-      'sofort',
+router.post('/create-checkout-session', async (req, res) => {
+  console.log("prout")
+  const session = await stripe.checkout.sessions.create({
+    customer_email: 'customer@example.com',
+    submit_type: 'donate',
+    billing_address_collection: 'auto',
+    shipping_address_collection: {
+      allowed_countries: ['US', 'CA','FR','BE'],
+    },
+    line_items: [
+      {
+        price_data: {
+          currency: 'eur',
+          product_data: {
+            name: 'zebi cart',
+          },
+          unit_amount: 2000,
+        },
+        quantity: 1,
+      },
     ],
+    mode: 'payment',
+    success_url: `${YOUR_DOMAIN}?success=true`,
+    cancel_url: `${YOUR_DOMAIN}?canceled=true`,
   });
 
-  res.send({
-    clientSecret: paymentIntent.client_secret,
-  });
+  res.redirect(303, session.url);
 });
 
 module.exports = router;
