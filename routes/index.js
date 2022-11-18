@@ -7,17 +7,16 @@ const stripe = require("stripe")(process.env.STRIPE_KEY);
 router.get('/', function (req, res, next) {
   res.send(`hello world ${process.env.test}`)
 });
-const calculateOrderAmount = (items) => {
-  return 1400;
-};
 
 router.post("/create-payment-intent", async (req, res) => {
   const { items } = req.body;
 
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: calculateOrderAmount(items),
+    amount: 9999,// 99,99€
+    description:"Programme sportif designé et créer par la coach Zoé Amalys",
     currency: "eur",
+    receipt_email:"mehdi.bouchbouk@student.vinci.be",
     payment_method_types: [
       'bancontact',
       'card',
