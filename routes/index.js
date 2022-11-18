@@ -7,15 +7,12 @@ const router = express.Router();
 require('dotenv').config();
 const stripe = Stripe(process.env.STRIPE_KEY);
 
-const YOUR_DOMAIN = 'http://localhost:4242';
+const YOUR_DOMAIN = 'http://localhost:3000';
 
-console.log("helooo")
 
 router.post('/create-checkout-session', async (req, res) => {
-  console.log("prout")
   const session = await stripe.checkout.sessions.create({
     customer_email: 'customer@example.com',
-    submit_type: 'donate',
     billing_address_collection: 'auto',
     shipping_address_collection: {
       allowed_countries: ['US', 'CA','FR','BE'],
@@ -34,7 +31,7 @@ router.post('/create-checkout-session', async (req, res) => {
     ],
     mode: 'payment',
     success_url: `${YOUR_DOMAIN}?success=true`,
-    cancel_url: `${YOUR_DOMAIN}?canceled=true`,
+    cancel_url: `${YOUR_DOMAIN}`,
   });
 
   res.redirect(303, session.url);
