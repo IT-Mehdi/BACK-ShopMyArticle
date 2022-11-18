@@ -12,7 +12,6 @@ const YOUR_DOMAIN = 'http://localhost:3000';
 
 router.post('/create-checkout-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({
-    customer_email: 'customer@example.com',
     billing_address_collection: 'auto',
     shipping_address_collection: {
       allowed_countries: ['US', 'CA','FR','BE'],
@@ -22,16 +21,16 @@ router.post('/create-checkout-session', async (req, res) => {
         price_data: {
           currency: 'eur',
           product_data: {
-            name: 'zebi cart',
+            name: 'Programme WorkoutByAmalys',
           },
-          unit_amount: 2000,
+          unit_amount: 9900,
         },
         quantity: 1,
       },
     ],
     mode: 'payment',
     success_url: `${YOUR_DOMAIN}?success=true`,
-    cancel_url: `${YOUR_DOMAIN}`,
+    cancel_url: `${YOUR_DOMAIN}?canceled=true`,
   });
 
   res.redirect(303, session.url);
