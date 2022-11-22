@@ -1,11 +1,8 @@
-// This is a public sample test API key.
-// Don’t submit any personally identifiable information in requests made with this key.
-// Sign in to see your own test API key embedded in code samples.
-const Stripe = require('stripe');
 const express = require('express');
 const router = express.Router();
 require('dotenv').config();
-const stripe = Stripe(process.env.STRIPE_KEY);
+const Stripe = require('stripe');
+const stripe = Stripe(process.env.STRIPE_KEY, { apiVersion: '2022-08-01' });
 
 const YOUR_DOMAIN = 'http://localhost:3000';
 
@@ -15,9 +12,9 @@ router.post("/create-payment-intent", async (req, res) => {
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
     amount: 9999,// 99,99€
-    description:"Programme sportif designé et créer par la coach Zoé Amalys",
+    description: "Programme sportif designé et créer par la coach Zoé Amalys",
     currency: "eur",
-    receipt_email:email,
+    receipt_email: email,
     payment_method_types: [
       'bancontact',
       'card',
@@ -36,7 +33,7 @@ router.post('/create-checkout-session', async (req, res) => {
     customer_email: req.body.email,
     billing_address_collection: 'auto',
     shipping_address_collection: {
-      allowed_countries: ['US', 'CA','FR','BE'],
+      allowed_countries: ['US', 'CA', 'FR', 'BE'],
     },
     line_items: [
       {
@@ -55,7 +52,7 @@ router.post('/create-checkout-session', async (req, res) => {
     cancel_url: `${YOUR_DOMAIN}/cancel`,
   });
 
-  res.json({url: session.url});
+  res.json({ url: session.url });
 });
 
 module.exports = router;
