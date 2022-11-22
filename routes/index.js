@@ -9,6 +9,27 @@ const stripe = Stripe(process.env.STRIPE_KEY);
 
 const YOUR_DOMAIN = 'http://localhost:3000';
 
+router.post("/create-payment-intent", async (req, res) => {
+  const email = req.body.email;
+
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: 9999,// 99,99€
+    description:"Programme sportif designé et créer par la coach Zoé Amalys",
+    currency: "eur",
+    receipt_email:email,
+    payment_method_types: [
+      'bancontact',
+      'card',
+      'sepa_debit',
+      'sofort',
+    ],
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+});
 
 router.post('/create-checkout-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({
@@ -23,7 +44,7 @@ router.post('/create-checkout-session', async (req, res) => {
           product_data: {
             name: 'Programme WorkoutByAmalys',
           },
-          unit_amount: 9900,
+          unit_amount: 9999,
         },
         quantity: 1,
       },
