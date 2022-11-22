@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 require('dotenv').config();
 const Stripe = require('stripe');
-const stripe = Stripe(process.env.STRIPE_KEY, { apiVersion: '2022-08-01' });
+const stripe = Stripe(process.env.STRIPE_KEY, { apiVersion: process.env.STRIPE_VERSION });
 
 const YOUR_DOMAIN = 'http://localhost:3000';
 
@@ -53,6 +53,24 @@ router.post('/create-checkout-session', async (req, res) => {
   });
 
   res.json({ url: session.url });
+});
+
+
+router.post('/webhook', express.raw({ type: 'application/json' }), (request, response) => {
+  const sig = request.headers['stripe-signature'];
+
+  let event;
+  const endpointSecret = process.env.STRIPE_WEEBHOOK_KEY;
+  
+  try {
+    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+  } catch (err) {
+    response.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+
+
+  response.status(200)
 });
 
 module.exports = router;
